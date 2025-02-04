@@ -213,7 +213,7 @@ task deepvariant_make_examples {
 
   Int task_end_index = task_start_index + tasks_per_shard - 1
 
-  Int mem_gb         = tasks_per_shard * 4
+  Int mem_gb         = 8000
   Int disk_size      = ceil(size(aligned_bams, "GB") * 2 + size(ref_fasta, "GB") + 20)
 
   command <<<
@@ -242,16 +242,13 @@ task deepvariant_make_examples {
         --min_mapping_quality=1 \
         --mode calling \
         --ref ~{ref_fasta} \
-        ~{if defined(regions_bed) then "--regions " + regions_bed else ""} \
         --reads ~{sep="," aligned_bams} \
         --examples example_tfrecords/~{sample_id}.examples.tfrecord@~{total_deepvariant_tasks}.gz \
         --gvcf nonvariant_site_tfrecords/~{sample_id}.gvcf.tfrecord@~{total_deepvariant_tasks}.gz \
         --task {}
 
-    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.example_tfrecords.tar.gz example_tfrecords \
-    && rm --recursive --force --verbose example_tfrecords
-    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.nonvariant_site_tfrecords.tar.gz nonvariant_site_tfrecords \
-    && rm --recursive --force --verbose nonvariant_site_tfrecords
+    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.example_tfrecords.tar.gz example_tfrecords
+    tar --gzip --create --verbose --file ~{sample_id}.~{task_start_index}.nonvariant_site_tfrecords.tar.gz nonvariant_site_tfrecords
   >>>
 
   output {
@@ -261,8 +258,8 @@ task deepvariant_make_examples {
 
   runtime {
     docker: docker_image
-    cpu: tasks_per_shard
-    memory: mem_gb + " GB"
+    cpu: 32
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -318,7 +315,7 @@ task deepvariant_call_variants_cpu {
 
   Int threads        = total_deepvariant_tasks
   Int writer_threads = 8
-  Int mem_gb         = total_deepvariant_tasks * 4
+  Int mem_gb         = 7000
   Int disk_size      = ceil(size(example_tfrecord_tars, "GB") * 2 + 100)
 
   command <<<
@@ -357,8 +354,8 @@ task deepvariant_call_variants_cpu {
 
   runtime {
     docker: docker_image
-    cpu: threads
-    memory: mem_gb + " GB"
+    cpu: 32
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -533,7 +530,7 @@ task deepvariant_postprocess_variants {
   }
 
   Int threads   = 2
-  Int mem_gb    = 72
+  Int mem_gb    = 60000
   Int disk_size = ceil((size(tfrecords_tar, "GB") + size(ref_fasta, "GB") + size(nonvariant_site_tfrecord_tars, "GB")) * 2 + 20)
 
   command <<<
@@ -551,7 +548,7 @@ task deepvariant_postprocess_variants {
       --cpus ~{threads} \
       --vcf_stats_report=false \
       --ref ~{ref_fasta} \
-      --infile ~{sample_id}.~{ref_name}.call_variants_output.tfrecord.gz \
+      --infile ~{sample_id}.~{ref_name}.call_variants_output@8.tfrecord.gz \
       --outfile ~{sample_id}.~{ref_name}.small_variants.vcf.gz \
       --nonvariant_site_tfrecord_path "nonvariant_site_tfrecords/~{sample_id}.gvcf.tfrecord@~{total_deepvariant_tasks}.gz" \
       --gvcf_outfile ~{sample_id}.~{ref_name}.small_variants.g.vcf.gz
@@ -582,8 +579,8 @@ task deepvariant_postprocess_variants {
 
   runtime {
     docker: docker_image
-    cpu: threads
-    memory: mem_gb + " GB"
+    cpu: 4
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
