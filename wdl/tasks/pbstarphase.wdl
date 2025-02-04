@@ -56,7 +56,7 @@ task pbstarphase_diplotype {
   }
 
   Int threads   = 2
-  Int mem_gb    = 16
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(phased_vcf, "GB") * 2 + size(aligned_bam, "GB") + size(ref_fasta, "GB") + 50)
 
   command <<<
@@ -81,7 +81,7 @@ task pbstarphase_diplotype {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pbstarphase@sha256:6954d6f7e462c9cec7aaf7ebb66efaf13d448239aab76a3c947c1dfe24859686"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
