@@ -95,7 +95,7 @@ task hiphase {
   }
 
   Int threads   = 16
-  Int mem_gb    = threads * 5
+  Int mem_gb    = 10000
   Int disk_size = ceil(size(vcfs, "GB") + size(ref_fasta, "GB") + size(aligned_bam, "GB") * 2 + 20)
 
   command <<<
@@ -203,7 +203,7 @@ task hiphase {
   runtime {
     docker: "~{runtime_attributes.container_registry}/hiphase@sha256:47fe7d42aea6b1b2e6d3c7401bc35a184464c3f647473d0525c00f3c968b40ad"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
