@@ -53,7 +53,7 @@ task paraphase {
   }
 
   Int threads   = 8
-  Int mem_gb    = threads * 2
+  Int mem_gb    = 16000
   Int disk_size = ceil(size(aligned_bam, "GB") +size(ref_fasta, "GB") + 20)
 
   command <<<
@@ -83,7 +83,7 @@ task paraphase {
   runtime {
     docker: "~{runtime_attributes.container_registry}/paraphase@sha256:a114ac5b9a682d7dc0fdf25c92cfb36f80c07ab4f1fb76b2e58092521b123a4d"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
