@@ -76,8 +76,8 @@ task cpg_pileup {
     RuntimeAttributes runtime_attributes
   }
 
-  Int threads   = 12
-  Int mem_gb    = 12
+  Int threads   = 8
+  Int mem_gb    = 16000
   Int disk_size = ceil((size(haplotagged_bam, "GB") + size(ref_fasta, "GB")) * 2 + 20)
 
   command <<<
@@ -127,7 +127,7 @@ task cpg_pileup {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb-cpg-tools@sha256:d6e63fe3f6855cfe60f573de1ca85fab27f4a68e24a7f5691a7a805a22af292d"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
