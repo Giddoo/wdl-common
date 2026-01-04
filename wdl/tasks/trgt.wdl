@@ -67,8 +67,8 @@ task trgt {
     RuntimeAttributes runtime_attributes
   }
 
-  Int threads   = 32
-  Int mem_gb    = 16
+  Int threads   = 8
+  Int mem_gb    = 16000
   Int disk_size = ceil((size(aligned_bam, "GB") + size(ref_fasta, "GB")) * 2 + 20)
 
   String karyotype = if select_first([sex, "FEMALE"]) == "MALE" then "XY" else "XX"
@@ -137,7 +137,7 @@ task trgt {
   runtime {
     docker: "~{runtime_attributes.container_registry}/trgt@sha256:0284ff5756f8d47d9d81b515b8b1a6c81fac862ae5a7b4fe89f65235c3e5e0c9"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -192,7 +192,7 @@ task trgt_merge {
   }
 
   Int threads   = 2
-  Int mem_gb    = 8
+  Int mem_gb    = 8000
   Int disk_size = ceil((size(vcfs, "GB") + size(ref_fasta, "GB")) * 2 + 20)
 
   command <<<
@@ -267,7 +267,7 @@ task coverage_dropouts {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil((size(aligned_bam, "GB")) + 20)
 
   command <<<
@@ -287,7 +287,7 @@ task coverage_dropouts {
   runtime {
     docker: "~{runtime_attributes.container_registry}/trgt@sha256:0284ff5756f8d47d9d81b515b8b1a6c81fac862ae5a7b4fe89f65235c3e5e0c9"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
