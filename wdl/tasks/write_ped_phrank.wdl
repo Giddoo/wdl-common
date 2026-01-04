@@ -49,7 +49,7 @@ task write_ped_phrank {
   }
 
   Int threads   = 1
-  Int mem_gb    = 2
+  Int mem_gb    = 4000
 
   command <<<
     set -euo pipefail
@@ -103,7 +103,7 @@ task write_ped_phrank {
   runtime {
     docker: "~{runtime_attributes.container_registry}/wgs_tertiary@sha256:128086b938d2602c06f4e5f88a8b7ead70933e3a43237e49cd505d141bb31785"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
