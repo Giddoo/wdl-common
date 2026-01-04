@@ -61,7 +61,7 @@ task bcftools_stats_roh_small_variants {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(vcf, "GB") + size(ref_fasta, "GB") + 20)
 
   command <<<
@@ -219,7 +219,7 @@ task bcftools_stats_roh_small_variants {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -265,7 +265,7 @@ task concat_pbsv_vcf {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(vcfs, "GB") * 2 + 20)
 
   command <<<
@@ -297,7 +297,7 @@ task concat_pbsv_vcf {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -351,7 +351,7 @@ task split_vcf_by_sample {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(vcf, "GB") * 2 + 20)
 
   String vcf_basename = basename(vcf, ".vcf.gz")
@@ -386,7 +386,7 @@ task split_vcf_by_sample {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -432,7 +432,7 @@ task bcftools_merge {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(vcfs, "GB") * 2 + 20)
 
   command <<<
@@ -456,7 +456,7 @@ task bcftools_merge {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
@@ -502,7 +502,7 @@ task sv_stats {
   }
 
   Int threads   = 2
-  Int mem_gb    = 4
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(vcf, "GB") + 20)
 
   command <<<
@@ -550,7 +550,7 @@ task sv_stats {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pb_wdl_base@sha256:4b889a1f21a6a7fecf18820613cf610103966a93218de772caba126ab70a8e87"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
