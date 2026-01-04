@@ -53,7 +53,7 @@ task paraphase {
   }
 
   Int threads   = 8
-  Int mem_gb    = threads * 2
+  Int mem_gb    = 16000
   Int disk_size = ceil(size(aligned_bam, "GB") +size(ref_fasta, "GB") + 20)
 
   command <<<
