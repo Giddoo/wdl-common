@@ -54,7 +54,7 @@ task pbmm2_align_wgs {
   }
 
   Int threads   = 24
-  Int mem_gb    = ceil(threads * 4)
+  Int mem_gb    = 8000
   Int disk_size = ceil(size(bam, "GB") * 3 + size(ref_fasta, "GB") + 70)
 
   String movie = basename(bam, ".bam")
@@ -163,7 +163,7 @@ task pbmm2_align_wgs {
   runtime {
     docker: "~{runtime_attributes.container_registry}/pbmm2@sha256:24218cb5cbc68d1fd64db14a9dc38263d3d931c74aca872c998d12ef43020ef0"
     cpu: threads
-    memory: mem_gb + " GB"
+    memory: mem_gb
     disk: disk_size + " GB"
     disks: "local-disk " + disk_size + " HDD"
     preemptible: runtime_attributes.preemptible_tries
